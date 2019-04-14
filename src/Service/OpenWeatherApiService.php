@@ -37,6 +37,8 @@ class OpenWeatherApiService
      *
      * @param string $cityName
      * @return array
+     * @throws ClientResponseException
+     * @throws Exception
      */
     public function getByCityName(string $cityName) : array
     {

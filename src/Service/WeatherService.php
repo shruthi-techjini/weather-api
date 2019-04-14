@@ -20,7 +20,6 @@ class WeatherService
         $this->apiResponseHandler = $apiResponseHandler;
     }
 
-
     /**
      * Get City Weather.
      *

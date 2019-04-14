@@ -33,8 +33,9 @@ class WeatherController extends AbstractFOSRestController
      * @Rest\Get("/weather/{citiName}")
      *
      * @return Response
+     * @throws HttpException
      */
-    public function getWeatherAction(string $citiName)
+    public function getWeatherAction(string $citiName) : array
     {
         try {
             $data = $this->weatherService->getWeatherByCitiName($citiName);

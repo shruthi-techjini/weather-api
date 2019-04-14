@@ -23,10 +23,6 @@ class ApiResponseHandlerService
      */
     public function getWeatherResponse(array $data) : array
     {
-        if(empty($data)){
-            throw new BadRequestException('Weather data not found.');
-        }
-
         return array(
             "weather_type" => $data['weather'][0]['main'] ?? '',
             "temperature" => $data['main']['temp'] ?? '',
