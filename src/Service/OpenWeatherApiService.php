@@ -5,7 +5,6 @@ use App\Exception\Exception;
 use App\Exception\ClientException as ClientResponseException;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\GuzzleException;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
 
@@ -38,8 +37,6 @@ class OpenWeatherApiService
      *
      * @param string $cityName
      * @return array
-     * @throws GuzzleException on request exception
-     * @throws BadRequestException
      */
     public function getByCityName(string $cityName) : array
     {
@@ -53,7 +50,8 @@ class OpenWeatherApiService
      *
      * @param array $params query parameters
      * @return ResponseInterface
-     * @throws GuzzleException
+     * @throws ClientResponseException
+     * @throws Exception
      */
     private function sendRequest(array $params) : ResponseInterface
     {
