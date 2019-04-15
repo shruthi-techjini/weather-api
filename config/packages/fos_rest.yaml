@@ -13,3 +13,8 @@ fos_rest:
     view_response_listener: 'force'
     formats:
       json: true
+  exception:
+    codes:
+      'Symfony\Component\Routing\Exception\ResourceNotFoundException': 404
+    messages:
+      'Symfony\Component\Routing\Exception\ResourceNotFoundException': true

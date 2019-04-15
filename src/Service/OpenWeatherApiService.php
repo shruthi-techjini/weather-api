@@ -1,12 +1,11 @@
 <?php
 namespace App\Service;
 
-use App\Exception\Exception;
-use App\Exception\ClientException as ClientResponseException;
 use GuzzleHttp\Client;
-use GuzzleHttp\Exception\ClientException;
 use Psr\Http\Message\ResponseInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class OpenWeatherApiService
 {
@@ -37,8 +36,6 @@ class OpenWeatherApiService
      *
      * @param string $cityName
      * @return array
-     * @throws ClientResponseException
-     * @throws Exception
      */
     public function getByCityName(string $cityName) : array
     {
@@ -52,8 +49,7 @@ class OpenWeatherApiService
      *
      * @param array $params query parameters
      * @return ResponseInterface
-     * @throws ClientResponseException
-     * @throws Exception
+     * @throws HttpException
      */
     private function sendRequest(array $params) : ResponseInterface
     {
@@ -63,12 +59,15 @@ class OpenWeatherApiService
             $response = $this->client->get($this->apiUrl, [
                 'query' => $params,
             ]);
-
-        } catch (ClientException $e) {
-            $data = json_decode($e->getResponse()->getBody()->getContents(), true);
-            throw new ClientResponseException($data['message'], $data['cod']);
         } catch (\Exception $e) {
-            throw new Exception($e->getMessage(), $e->getCode());
+            switch ($e->getCode()) {
+                case Response::HTTP_UNAUTHORIZED:
+                    throw new HttpException(Response::HTTP_UNAUTHORIZED, 'Invalid App ID or it has incorrect value.');
+                case Response::HTTP_NOT_FOUND:
+                    throw new HttpException(Response::HTTP_NOT_FOUND,'City not found');
+                default:
+                    throw new HttpException(Response::HTTP_INTERNAL_SERVER_ERROR, 'Internal server error.');
+            }
         }
 
         return $response;
