@@ -2,6 +2,8 @@
 namespace App\Service;
 
 
+use App\Utils\CurrentWeather;
+
 class WeatherService
 {
     /**
@@ -9,15 +11,9 @@ class WeatherService
      */
     private $openWeatherApi;
 
-    /**
-     * @var ApiResponseHandlerService
-     */
-    private $apiResponseHandler;
-
-    public function __construct(OpenWeatherApiService $openWeatherApi, ApiResponseHandlerService $apiResponseHandler)
+    public function __construct(OpenWeatherApiService $openWeatherApi)
     {
         $this->openWeatherApi = $openWeatherApi;
-        $this->apiResponseHandler = $apiResponseHandler;
     }
 
     /**
@@ -27,8 +23,8 @@ class WeatherService
      */
     public function getWeatherByCitiName(string $citiName) : array
     {
-        $response = $this->apiResponseHandler->getWeatherResponse($this->openWeatherApi->getByCityName($citiName));
+        $currentWeather = new CurrentWeather($this->openWeatherApi->getByCityName($citiName));
 
-        return $response;
+        return $currentWeather->getWeatherDetail();
     }
 }
